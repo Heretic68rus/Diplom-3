@@ -1,7 +1,7 @@
-package Rest.step;
+package ru.yandex.praktikum.rest.step;
 
-import Rest.dto.UserCreateRequest;
-import Rest.send.UserSend;
+import ru.yandex.praktikum.rest.dto.UserCreateRequest;
+import ru.yandex.praktikum.rest.send.UserSend;
 import io.restassured.response.ValidatableResponse;
 import lombok.AllArgsConstructor;
 

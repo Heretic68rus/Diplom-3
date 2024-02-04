@@ -1,4 +1,4 @@
-package PageObject;
+package ru.yandex.praktikum.page.object;
 
 import io.qameta.allure.Step;
 import org.openqa.selenium.By;

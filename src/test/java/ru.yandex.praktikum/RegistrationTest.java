@@ -1,8 +1,11 @@
-import PageObject.HomePageObject;
-import PageObject.PersonalCabinetPageObject;
-import PageObject.RegistrationPageObject;
-import Rest.send.UserSend;
-import Rest.step.UserSteps;
+package ru.yandex.praktikum;
+
+import jdk.jfr.Description;
+import ru.yandex.praktikum.page.object.HomePageObject;
+import ru.yandex.praktikum.page.object.PersonalCabinetPageObject;
+import ru.yandex.praktikum.page.object.RegistrationPageObject;
+import ru.yandex.praktikum.rest.send.UserSend;
+import ru.yandex.praktikum.rest.step.UserSteps;
 import io.github.bonigarcia.wdm.WebDriverManager;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.junit.After;
@@ -16,6 +19,9 @@ public class RegistrationTest {
     private final String email = RandomStringUtils.randomAlphabetic(5) + "@mail.com";
     private WebDriver driver;
     private UserSteps userSteps;
+    private HomePageObject homePageObject;
+    private PersonalCabinetPageObject personalCabinetPageObject;
+    private RegistrationPageObject registrationPageObject;
 
     @Before
     public void setup() {
@@ -32,37 +38,30 @@ public class RegistrationTest {
                 this.driver = new ChromeDriver();
         }
         userSteps = new UserSteps(new UserSend());
-    }
-
-    @Test
-    public void registrationIsSuccess() {
-        String password = RandomStringUtils.randomAlphabetic(3) + RandomStringUtils.randomNumeric(3);
         this.driver.get("https://stellarburgers.nomoreparties.site/");
-        HomePageObject homePageObject = new HomePageObject(this.driver);
+        homePageObject = new HomePageObject(this.driver);
+        personalCabinetPageObject = new PersonalCabinetPageObject(this.driver);
+        registrationPageObject = new RegistrationPageObject(this.driver);
         homePageObject.clickLogInToAccountButton();
-        PersonalCabinetPageObject personalCabinetPageObject = new PersonalCabinetPageObject(this.driver);
         personalCabinetPageObject.clickRegistrationButtonOnPersonalCabinet();
-        RegistrationPageObject registrationPageObject = new RegistrationPageObject(this.driver);
         registrationPageObject.waitForLoadNameFieldOnRegistrationPage();
         registrationPageObject.fillNameFieldOnRegistrationPage(name);
         registrationPageObject.fillEmailFieldOnRegistrationPage(email);
+    }
+
+    @Test
+    @Description("Успешная регистрация")
+    public void registrationIsSuccess() {
+        String password = RandomStringUtils.randomAlphabetic(3) + RandomStringUtils.randomNumeric(3);
         registrationPageObject.fillPasswordFieldOnRegistrationPage(password);
         registrationPageObject.clickRegistrationButtonOnRegistrationPage();
         personalCabinetPageObject.waitForLoadHeaderEnterOnPersonalCabinetToConfirmSuccessfulRegistration();
     }
 
     @Test
+    @Description("Регистрация с паролем меньше 6 знаков")
     public void registrationNotCompletedWithPasswordLessThenSixCharacters() {
         String password = RandomStringUtils.randomAlphabetic(2) + RandomStringUtils.randomNumeric(3);
-        this.driver.get("https://stellarburgers.nomoreparties.site/");
-        HomePageObject homePageObject = new HomePageObject(this.driver);
-        homePageObject.clickLogInToAccountButton();
-        PersonalCabinetPageObject personalCabinetPageObject = new PersonalCabinetPageObject(this.driver);
-        personalCabinetPageObject.clickRegistrationButtonOnPersonalCabinet();
-        RegistrationPageObject registrationPageObject = new RegistrationPageObject(this.driver);
-        registrationPageObject.waitForLoadNameFieldOnRegistrationPage();
-        registrationPageObject.fillNameFieldOnRegistrationPage(name);
-        registrationPageObject.fillEmailFieldOnRegistrationPage(email);
         registrationPageObject.fillPasswordFieldOnRegistrationPage(password);
         registrationPageObject.clickRegistrationButtonOnRegistrationPage();
         registrationPageObject.waitForIncorrectPasswordTextOnRegistrationPageWhenEnteringPasswordLessThanSixCharacters();

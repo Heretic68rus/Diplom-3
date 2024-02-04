@@ -1,6 +1,10 @@
-import PageObject.HomePageObject;
-import Rest.send.UserSend;
-import Rest.step.UserSteps;
+package ru.yandex.praktikum;
+
+import jdk.jfr.Description;
+import ru.yandex.praktikum.page.object.HomePageObject;
+import ru.yandex.praktikum.page.object.PersonalCabinetPageObject;
+import ru.yandex.praktikum.rest.send.UserSend;
+import ru.yandex.praktikum.rest.step.UserSteps;
 import io.github.bonigarcia.wdm.WebDriverManager;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.junit.After;
@@ -9,12 +13,14 @@ import org.junit.Test;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriver;
 
-public class ConstructorTest {
+public class PageTransitionsTest {
     private final String email = RandomStringUtils.randomAlphabetic(5) + "@mail.com";
     private final String password = RandomStringUtils.randomAlphabetic(5) + RandomStringUtils.randomNumeric(5);
     private final String name = RandomStringUtils.randomAlphabetic(10);
     private WebDriver driver;
     private UserSteps userSteps;
+    private HomePageObject homePageObject;
+    private PersonalCabinetPageObject personalCabinetPageObject;
 
     @Before
     public void setup() {
@@ -33,31 +39,30 @@ public class ConstructorTest {
         userSteps = new UserSteps(new UserSend());
         userSteps
                 .createUser(email, password, name);
-    }
-
-    @Test
-    public void openingSectionBunOfThrConstructor() {
         this.driver.get("https://stellarburgers.nomoreparties.site/");
-        HomePageObject homePageObject = new HomePageObject(this.driver);
-        homePageObject.clickSauceButton();
-        homePageObject.clickBunsButton();
-        homePageObject.waitForLoadFirstBurgerIngredientImageToConfirmSuccessfulOpenSectionBunOfConstructor();
+        homePageObject = new HomePageObject(this.driver);
+        personalCabinetPageObject = new PersonalCabinetPageObject(this.driver);
+        homePageObject.clickLogInToAccountButton();
     }
 
     @Test
+    @Description("Переход в личный кабинет")
+    public void transitionToPersonalCabinetIsSuccessful() {
+        personalCabinetPageObject.waitForLoadEnterButtonOnPersonalCabinetToConfirmSuccessfulTransitionToPersonalCabinet();
+    }
+
+    @Test
+    @Description("Переход из личного кабинета в конструктор")
     public void transitionFromPersonalCabinetToMainPageThrowConstructorIsSuccessful() {
-        this.driver.get("https://stellarburgers.nomoreparties.site/");
-        HomePageObject homePageObject = new HomePageObject(this.driver);
-        homePageObject.clickSauceButton();
-        homePageObject.waitForLoadFirstSauceIngredientImageToConfirmSuccessfulOpenSectionSauceOfConstructor();
+        homePageObject.clickLogoConstructor();
+        homePageObject.waitForLoadLogInToAccountButtonAfterSuccessfulTransitionFromPersonalCabinetToHomePage();
     }
 
     @Test
-    public void transitionFromPersonalCabinetToMainPageThrowStellatBurgersLogoIsSuccessful() {
-        this.driver.get("https://stellarburgers.nomoreparties.site/");
-        HomePageObject homePageObject = new HomePageObject(this.driver);
-        homePageObject.clickFillingsButton();
-        homePageObject.waitForLoadFirstFillingsIngredientImageToConfirmSuccessfulOpenSectionFillingsOfConstructor();
+    @Description("Переход на главную страницу через логотип сайта")
+    public void transitionFromPersonalCabinetToMainPageThrowStellarBurgersLogoIsSuccessful() {
+        homePageObject.clickLogoStellarBurgers();
+        homePageObject.waitForLoadLogInToAccountButtonAfterSuccessfulTransitionFromPersonalCabinetToHomePage();
     }
 
     @After
@@ -69,6 +74,5 @@ public class ConstructorTest {
         userSteps
                 .deleteUser();
     }
-
-
 }
+

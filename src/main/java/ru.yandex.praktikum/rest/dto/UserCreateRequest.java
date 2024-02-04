@@ -1,4 +1,4 @@
-package Rest.dto;
+package ru.yandex.praktikum.rest.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

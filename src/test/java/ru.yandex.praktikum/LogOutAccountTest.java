@@ -1,7 +1,10 @@
-import PageObject.HomePageObject;
-import PageObject.PersonalCabinetPageObject;
-import Rest.send.UserSend;
-import Rest.step.UserSteps;
+package ru.yandex.praktikum;
+
+import jdk.jfr.Description;
+import ru.yandex.praktikum.page.object.HomePageObject;
+import ru.yandex.praktikum.page.object.PersonalCabinetPageObject;
+import ru.yandex.praktikum.rest.send.UserSend;
+import ru.yandex.praktikum.rest.step.UserSteps;
 import io.github.bonigarcia.wdm.WebDriverManager;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.junit.After;
@@ -37,6 +40,7 @@ public class LogOutAccountTest {
     }
 
     @Test
+    @Description("Выход из аккаунта")
     public void LogOutAccountCompletedSuccessfully() {
         this.driver.get("https://stellarburgers.nomoreparties.site/");
         HomePageObject homePageObject = new HomePageObject(this.driver);

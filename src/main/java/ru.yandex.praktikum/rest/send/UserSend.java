@@ -1,6 +1,6 @@
-package Rest.send;
+package ru.yandex.praktikum.rest.send;
 
-import Rest.dto.UserCreateRequest;
+import ru.yandex.praktikum.rest.dto.UserCreateRequest;
 import io.restassured.response.Response;
 
 public class UserSend extends BaseSend {

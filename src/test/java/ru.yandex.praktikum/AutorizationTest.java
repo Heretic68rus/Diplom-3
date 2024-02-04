@@ -1,9 +1,12 @@
-import PageObject.HomePageObject;
-import PageObject.PersonalCabinetPageObject;
-import PageObject.RecoverPasswordPageObject;
-import PageObject.RegistrationPageObject;
-import Rest.send.UserSend;
-import Rest.step.UserSteps;
+package ru.yandex.praktikum;
+
+import jdk.jfr.Description;
+import ru.yandex.praktikum.page.object.HomePageObject;
+import ru.yandex.praktikum.page.object.PersonalCabinetPageObject;
+import ru.yandex.praktikum.page.object.RecoverPasswordPageObject;
+import ru.yandex.praktikum.page.object.RegistrationPageObject;
+import ru.yandex.praktikum.rest.send.UserSend;
+import ru.yandex.praktikum.rest.step.UserSteps;
 import io.github.bonigarcia.wdm.WebDriverManager;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.junit.After;
@@ -12,12 +15,16 @@ import org.junit.Test;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriver;
 
-public class AutorizationTest {
+public class AutorizationTest{
     private final String email = RandomStringUtils.randomAlphabetic(5) + "@mail.com";
     private final String password = RandomStringUtils.randomAlphabetic(5) + RandomStringUtils.randomNumeric(5);
     private final String name = RandomStringUtils.randomAlphabetic(10);
     private WebDriver driver;
     private UserSteps userSteps;
+    private HomePageObject homePageObject;
+    private PersonalCabinetPageObject personalCabinetPageObject;
+    private RegistrationPageObject registrationPageObject;
+    private RecoverPasswordPageObject recoverPasswordPageObject;
 
     @Before
     public void setup() {
@@ -36,14 +43,17 @@ public class AutorizationTest {
         userSteps = new UserSteps(new UserSend());
         userSteps
                 .createUser(email, password, name);
+        this.driver.get("https://stellarburgers.nomoreparties.site/");
+        homePageObject = new HomePageObject(this.driver);
+        personalCabinetPageObject = new PersonalCabinetPageObject(this.driver);
+        registrationPageObject = new RegistrationPageObject(this.driver);
+        recoverPasswordPageObject = new RecoverPasswordPageObject(this.driver);
+        homePageObject.clickPersonalCabinetButton();
     }
 
     @Test
-    public void autorizationThrougHomePageCompletedSuccessfully() {
-        this.driver.get("https://stellarburgers.nomoreparties.site/");
-        HomePageObject homePageObject = new HomePageObject(this.driver);
-        PersonalCabinetPageObject personalCabinetPageObject = new PersonalCabinetPageObject(this.driver);
-        homePageObject.clickLogInToAccountButton();
+    @Description("Успешное авторизация через главную страницу")
+    public void autorizationThroughHomePageCompletedSuccessfully() {
         personalCabinetPageObject.fillEmailFieldOnPersonalCabinet(email);
         personalCabinetPageObject.fillPasswordFieldOnPersonalCabinet(password);
         personalCabinetPageObject.clickEnterButtonOnPersonalCabinet();
@@ -51,11 +61,8 @@ public class AutorizationTest {
     }
 
     @Test
+    @Description("Успешное авторизация через личный кабинет")
     public void autorizationThroughPersonalCabinetCompletedSuccessfully() {
-        this.driver.get("https://stellarburgers.nomoreparties.site/");
-        HomePageObject homePageObject = new HomePageObject(this.driver);
-        PersonalCabinetPageObject personalCabinetPageObject = new PersonalCabinetPageObject(this.driver);
-        homePageObject.clickPersonalCabinetButton();
         personalCabinetPageObject.fillEmailFieldOnPersonalCabinet(email);
         personalCabinetPageObject.fillPasswordFieldOnPersonalCabinet(password);
         personalCabinetPageObject.clickEnterButtonOnPersonalCabinet();
@@ -63,12 +70,8 @@ public class AutorizationTest {
     }
 
     @Test
+    @Description("Успешное авторизация через страницу регистрации")
     public void autorizationThroughRegistrationPageCompletedSuccessfully() {
-        this.driver.get("https://stellarburgers.nomoreparties.site/");
-        HomePageObject homePageObject = new HomePageObject(this.driver);
-        PersonalCabinetPageObject personalCabinetPageObject = new PersonalCabinetPageObject(this.driver);
-        RegistrationPageObject registrationPageObject = new RegistrationPageObject(this.driver);
-        homePageObject.clickPersonalCabinetButton();
         personalCabinetPageObject.clickRegistrationButtonOnPersonalCabinet();
         registrationPageObject.clickEnterButtonOnRegistrationPage();
         personalCabinetPageObject.fillEmailFieldOnPersonalCabinet(email);
@@ -78,12 +81,8 @@ public class AutorizationTest {
     }
 
     @Test
+    @Description("Успешное авторизация через форму восстановления пароля")
     public void autorizationThroughPasswordRecoverPageCompletedSuccessfully() {
-        this.driver.get("https://stellarburgers.nomoreparties.site/");
-        HomePageObject homePageObject = new HomePageObject(this.driver);
-        PersonalCabinetPageObject personalCabinetPageObject = new PersonalCabinetPageObject(this.driver);
-        RecoverPasswordPageObject recoverPasswordPageObject = new RecoverPasswordPageObject(this.driver);
-        homePageObject.clickPersonalCabinetButton();
         personalCabinetPageObject.clickRecoverPasswordButtonOnPersonalCabinet();
         recoverPasswordPageObject.fillEmailFieldOnRecoverPasswordPage(email);
         recoverPasswordPageObject.clickEnterButtonOnRecoverPasswordPage();
